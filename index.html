@@ -4,35 +4,173 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance System | Home</title>
-  <link rel="stylesheet" href="style.css">
-  </title>
+
   <style>
-     body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
-    header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
-    nav ul { list-style: none; padding: 0; text-align: center; margin: 10px 0; }
-    nav ul li { display: inline-block; margin: 0 15px; }
-    nav ul li a { color: #fff; text-decoration: none; font-weight: bold; }
-    nav ul li a.active { text-decoration: underline; }
-    main { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-    th, td { padding: 12px 15px; border: 1px solid #ccc; text-align: left; }
-    th { background-color: #0a3d62; color: #fff; }
-    tr:nth-child(even) { background-color: #f9f9f9; }
-    footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
-    </style>
+    /* Base Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #0a3d62;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Navigation */
+    nav {
+      margin-top: 10px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: inline-block;
+      margin: 0 10px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffd32a;
+    }
+
+    nav a.active {
+      text-decoration: underline;
+    }
+
+    /* Hamburger button */
+    .menu-toggle {
+      display: none;
+      position: absolute;
+      top: 25px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Home Section */
+    .home {
+      text-align: center;
+      margin: 50px auto;
+      max-width: 600px;
+      padding: 0 20px;
+    }
+
+    .home h2 {
+      color: #0a3d62;
+      font-size: 28px;
+    }
+
+    .home p {
+      font-size: 16px;
+      color: #333;
+      margin: 10px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #0a3d62;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #074a8a;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #0a3d62;
+      color: #fff;
+      margin-top: 40px;
+    }
+
+    /* ✅ Responsive Design */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: #0a3d62;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 100%;
+      }
+
+      nav ul.show {
+        display: flex;
+      }
+
+      nav ul li {
+        display: block;
+        margin: 15px 0;
+      }
+
+      .home h2 {
+        font-size: 24px;
+      }
+
+      .btn {
+        width: 80%;
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .home h2 {
+        font-size: 22px;
+      }
+
+      .btn {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
- 
-</head>
-<body>
-    <header>
+  <header>
     <h1>👋 Welcome to Attendance System</h1>
+
+    <!-- ☰ Hamburger Button -->
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    <!-- Navigation Links -->
     <nav>
-      <a href="index.html">Home</a> 
-      <a href="register.html">Register</a>
-      <a href="attendance_report.html">Reports</a>
+      <ul id="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="register.html">Register</a></li>
+        <li><a href="attendance_report.html">Reports</a></li>
+      </ul>
     </nav>
   </header>
-  
 
   <section class="home">
     <h2>Smart Attendance Management</h2>
@@ -44,5 +182,15 @@
   <footer>
     <p>© 2025 Attendance System | Created by Tharushi</p>
   </footer>
+
+  <!-- 🧠 JavaScript for Menu -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+    });
+  </script>
 </body>
 </html>
