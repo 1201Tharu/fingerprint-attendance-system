@@ -282,13 +282,13 @@ function renderSummary(filterType,viewDate,filteredEmps){
 
   filteredEmps.forEach(e=>{
     const id=e.ID;let total=0;
-    html+=`<tr><td>${e.name}</td>`;
+    html+=`<tr><td data-label="Employee">${e.name}</td>`;
     allDates.forEach(d=>{
       const h=(matrix[id]&&matrix[id][d])||0;
       total+=h;
-      html+=`<td>${h?formatHours(h):'-'}</td>`;
+      html+=`<td data-label="${d}">${h?formatHours(h):'-'}</td>`;
     });
-    html+=`<td>${total?formatHours(total):'-'}</td></tr>`;
+    html+=`<td data-label="Total Hours">${total?formatHours(total):'-'}</td></tr>`;
   });
   html+="</tbody></table>";
   summaryWrapper.innerHTML=html;
