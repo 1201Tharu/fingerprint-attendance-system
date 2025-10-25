@@ -13,7 +13,8 @@
   nav ul li a.active { text-decoration: underline; }
   main { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
   select, input[type="date"] { padding: 6px 10px; margin-bottom: 10px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 10px;}
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 10px; }
   th, td { padding: 10px 12px; border: 1px solid #ccc; text-align: center; }
   th { background-color: #0a3d62; color: #fff; }
   tr:nth-child(even) { background-color: #f9f9f9; }
@@ -23,10 +24,35 @@
   input[type="time"] { width: 100px; }
   footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
   .note { color: #555; font-size: 0.9em; }
-  #summary { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 25px; padding: 15px; border-radius: 8px; overflow-x: auto;}
+  #summary { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 25px; padding: 15px; border-radius: 8px; overflow-x: auto; }
   #summary h3 { margin-bottom: 10px; color: #0a3d62; }
   #summary th, #summary td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   #summary th { background-color: #0a3d62; color: #fff; }
+
+  /* Responsive for mobile */
+  @media (max-width: 768px) {
+    .filters { flex-direction: column; }
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+    thead tr { display: none; }
+    tr { margin-bottom: 15px; border-bottom: 2px solid #ddd; }
+    td { 
+      text-align: right; 
+      padding-left: 50%; 
+      position: relative;
+    }
+    td::before { 
+      content: attr(data-label); 
+      position: absolute; 
+      left: 10px; 
+      width: 45%; 
+      padding-left: 10px; 
+      font-weight: bold; 
+      text-align: left;
+    }
+    input[type="time"] { width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -45,7 +71,7 @@
 <main>
   <h2>Attendance Management (Daily + Summary)</h2>
 
-  <div>
+  <div class="filters">
     <label for="filter">View:</label>
     <select id="filter">
       <option value="daily">Daily</option>
@@ -165,13 +191,16 @@ function renderTable(){
       const st=rec.status||"Absent";
       const hrs=calcHours(rec.inTime,rec.outTime);
       return `<tr data-id="${emp.ID}">
-      <td>${emp.name}</td><td>${emp.ID}</td><td>${emp.department}</td><td>${emp.position}</td>
-      <td>${emp.registeredDate||''}</td>
-      <td><button class="${st==='Present'?'present':'absent'} statusBtn">${st}</button></td>
-      <td>${hrs?formatHours(hrs):'-'}</td>
-      <td><input type="time" class="inTime" value="${rec.inTime||''}"></td>
-      <td><input type="time" class="outTime" value="${rec.outTime||''}"></td>
-      <td>${date}</td></tr>`;
+      <td data-label="Name">${emp.name}</td>
+      <td data-label="ID">${emp.ID}</td>
+      <td data-label="Department">${emp.department}</td>
+      <td data-label="Position">${emp.position}</td>
+      <td data-label="Registered Date">${emp.registeredDate||''}</td>
+      <td data-label="Status / Days Present"><button class="${st==='Present'?'present':'absent'} statusBtn">${st}</button></td>
+      <td data-label="Total Hours">${hrs?formatHours(hrs):'-'}</td>
+      <td data-label="In Time"><input type="time" class="inTime" value="${rec.inTime||''}"></td>
+      <td data-label="Out Time"><input type="time" class="outTime" value="${rec.outTime||''}"></td>
+      <td data-label="Date(s)">${date}</td></tr>`;
     }).join('');
     addDailyListeners(date);
   }else{
@@ -185,10 +214,16 @@ function renderTable(){
         total+=calcHours(r.inTime,r.outTime);
       });
       return `<tr>
-      <td>${emp.name}</td><td>${emp.ID}</td><td>${emp.department}</td><td>${emp.position}</td>
-      <td>${emp.registeredDate||''}</td>
-      <td>${present}</td><td>${total?formatHours(total):'-'}</td><td>-</td><td>-</td>
-      <td>${dates.join(', ')}</td></tr>`;
+      <td data-label="Name">${emp.name}</td>
+      <td data-label="ID">${emp.ID}</td>
+      <td data-label="Department">${emp.department}</td>
+      <td data-label="Position">${emp.position}</td>
+      <td data-label="Registered Date">${emp.registeredDate||''}</td>
+      <td data-label="Status / Days Present">${present}</td>
+      <td data-label="Total Hours">${total?formatHours(total):'-'}</td>
+      <td data-label="In Time">-</td>
+      <td data-label="Out Time">-</td>
+      <td data-label="Date(s)">${dates.join(', ')}</td></tr>`;
     }).join('');
   }
   renderSummary(f,date,filteredEmps);
