@@ -5,25 +5,154 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Register Employees</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
-  header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
-  nav ul { list-style: none; padding: 0; text-align: center; margin: 10px 0; }
-  nav ul li { display: inline-block; margin: 0 15px; }
-  nav ul li a { color: #fff; text-decoration: none; font-weight: bold; }
-  nav ul li a.active { text-decoration: underline; }
-  main { max-width: 950px; margin: 30px auto; padding: 0 20px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
-  form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
+  body { 
+    font-family: Arial, sans-serif; 
+    background: #f4f4f4; 
+    margin:0; 
+    padding:0; 
+  }
+
+  header { 
+    background: #0a3d62; 
+    color: #fff; 
+    padding: 20px; 
+    text-align: center; 
+  }
+
+  nav ul { 
+    list-style: none; 
+    padding: 0; 
+    text-align: center; 
+    margin: 10px 0; 
+  }
+
+  nav ul li { 
+    display: inline-block; 
+    margin: 0 15px; 
+  }
+
+  nav ul li a { 
+    color: #fff; 
+    text-decoration: none; 
+    font-weight: bold; 
+  }
+
+  nav ul li a.active { 
+    text-decoration: underline; 
+  }
+
+  main { 
+    max-width: 950px; 
+    margin: 30px auto; 
+    padding: 0 20px; 
+    background: #fff; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    border-radius: 8px; 
+  }
+
+  form { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
+    padding: 20px; 
+  }
+
   label { font-weight: bold; }
-  input, select, button { padding: 8px; font-size: 1em; }
-  button { border: none; border-radius: 4px; cursor: pointer; }
-  .add-btn { background-color: #2ecc71; color: #fff; grid-column: span 2; }
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-  th { background: #0a3d62; color: #fff; }
-  tr:nth-child(even) { background-color: #f9f9f9; }
-  .edit-btn { background-color: #f39c12; color: #fff; }
-  .delete-btn { background-color: #c0392b; color: #fff; }
-  footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+
+  input, select, button { 
+    padding: 8px; 
+    font-size: 1em; 
+    width: 100%; 
+    box-sizing: border-box; 
+  }
+
+  button { 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+  }
+
+  .add-btn { 
+    background-color: #2ecc71; 
+    color: #fff; 
+    grid-column: span 2; 
+  }
+
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 20px; 
+  }
+
+  th, td { 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    text-align: center; 
+  }
+
+  th { 
+    background: #0a3d62; 
+    color: #fff; 
+  }
+
+  tr:nth-child(even) { 
+    background-color: #f9f9f9; 
+  }
+
+  .edit-btn { 
+    background-color: #f39c12; 
+    color: #fff; 
+  }
+
+  .delete-btn { 
+    background-color: #c0392b; 
+    color: #fff; 
+  }
+
+  footer { 
+    text-align: center; 
+    padding: 15px; 
+    background: #0a3d62; 
+    color: #fff; 
+    margin-top: 40px; 
+  }
+
+  /* ✅ MOBILE RESPONSIVE DESIGN */
+  @media (max-width: 768px) {
+    nav ul li { 
+      display: block; 
+      margin: 10px 0; 
+    }
+
+    form {
+      grid-template-columns: 1fr; /* single column form for small screens */
+    }
+
+    .add-btn {
+      grid-column: span 1;
+    }
+
+    main {
+      margin: 15px;
+      padding: 10px;
+    }
+
+    table, th, td {
+      font-size: 14px;
+      padding: 6px;
+    }
+
+    table {
+      display: block;
+      overflow-x: auto; /* horizontal scroll for wide tables */
+      white-space: nowrap;
+    }
+
+    header h1 {
+      font-size: 1.3em;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -51,7 +180,6 @@
       <label>Employee ID:</label>
       <input type="text" id="empID"  placeholder="Enter empID" required>
     </div>
-   
     <div>
       <label>Department:</label>
       <input type="text" id="department" placeholder="Enter department" required>
@@ -60,7 +188,7 @@
       <label>Position:</label>
       <input type="text" id="position" placeholder="Enter position" required>
     </div>
-     <div>
+    <div>
       <label>Fingerprint ID:</label>
       <input type="text" id="fingerprintID" placeholder="Enter fingerprint ID" required>
     </div>
