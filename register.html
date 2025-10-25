@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Register Employees</title>
 <style>
+  /* Base Styles */
   body { 
     font-family: Arial, sans-serif; 
     background: #f4f4f4; 
@@ -20,18 +21,20 @@
     position: relative;
   }
 
+  /* Hamburger Button */
   .menu-toggle {
     display: none;
     position: absolute;
-    top: 20px;
+    top: 25px;
     right: 20px;
     background: none;
     border: none;
-    color: #fff;
     font-size: 28px;
+    color: #fff;
     cursor: pointer;
   }
 
+  /* Navigation */
   nav ul { 
     list-style: none; 
     padding: 0; 
@@ -48,6 +51,11 @@
     color: #fff; 
     text-decoration: none; 
     font-weight: bold; 
+    transition: color 0.3s;
+  }
+
+  nav ul li a:hover { 
+    color: #ffd32a;
   }
 
   nav ul li a.active { 
@@ -130,7 +138,7 @@
     margin-top: 40px; 
   }
 
-  /* ✅ MOBILE RESPONSIVE DESIGN */
+  /* ✅ Responsive Design */
   @media (max-width: 768px) {
     .menu-toggle {
       display: block;
@@ -139,36 +147,28 @@
     nav ul {
       display: none;
       flex-direction: column;
-      background-color: #0a3d62;
+      background: #0a3d62;
       position: absolute;
       top: 70px;
-      left: 0;
+      right: 0;
       width: 100%;
-      text-align: center;
-      padding: 10px 0;
-      z-index: 1000;
     }
 
     nav ul.show {
       display: flex;
     }
 
-    nav ul li { 
-      display: block; 
-      margin: 10px 0; 
+    nav ul li {
+      display: block;
+      margin: 15px 0;
     }
 
     form {
-      grid-template-columns: 1fr; /* single column form for small screens */
+      grid-template-columns: 1fr;
     }
 
     .add-btn {
       grid-column: span 1;
-    }
-
-    main {
-      margin: 15px;
-      padding: 10px;
     }
 
     table, th, td {
@@ -178,7 +178,7 @@
 
     table {
       display: block;
-      overflow-x: auto; /* horizontal scroll for wide tables */
+      overflow-x: auto;
       white-space: nowrap;
     }
 
@@ -191,8 +191,11 @@
 <body>
 
 <header>
-  <h1>Employee Registration</h1>
+  <h1>👨‍💼 Employee Registration</h1>
+  
+  <!-- ☰ Hamburger Button -->
   <button class="menu-toggle" id="menu-toggle">☰</button>
+
   <nav>
     <ul id="nav-links">
       <li><a href="index.html">Home</a></li>
@@ -212,7 +215,7 @@
     </div>
     <div>
       <label>Employee ID:</label>
-      <input type="text" id="empID"  placeholder="Enter empID" required>
+      <input type="text" id="empID" placeholder="Enter empID" required>
     </div>
     <div>
       <label>Department:</label>
@@ -247,16 +250,17 @@
 </main>
 
 <footer>
-  <p>&copy; 2025 Attendance System | Developed by Tharushi</p>
+  <p>© 2025 Attendance System | Created by Tharushi</p>
 </footer>
 
 <script>
 let employees = JSON.parse(localStorage.getItem("employees")) || [];
 const form = document.getElementById("registerForm");
 const tableBody = document.querySelector("#employeeTable tbody");
+
+// ☰ Toggle Menu
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.getElementById("nav-links");
-
 menuToggle.addEventListener("click", () => {
   navLinks.classList.toggle("show");
 });
