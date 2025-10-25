@@ -17,6 +17,19 @@
     color: #fff; 
     padding: 20px; 
     text-align: center; 
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
   }
 
   nav ul { 
@@ -119,6 +132,27 @@
 
   /* ✅ MOBILE RESPONSIVE DESIGN */
   @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    nav ul {
+      display: none;
+      flex-direction: column;
+      background-color: #0a3d62;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    nav ul.show {
+      display: flex;
+    }
+
     nav ul li { 
       display: block; 
       margin: 10px 0; 
@@ -152,15 +186,15 @@
       font-size: 1.3em;
     }
   }
-
 </style>
 </head>
 <body>
 
 <header>
   <h1>Employee Registration</h1>
+  <button class="menu-toggle" id="menu-toggle">☰</button>
   <nav>
-    <ul>
+    <ul id="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="register.html" class="active">Register</a></li>
       <li><a href="attendance_report.html">Reports</a></li>
@@ -220,6 +254,12 @@
 let employees = JSON.parse(localStorage.getItem("employees")) || [];
 const form = document.getElementById("registerForm");
 const tableBody = document.querySelector("#employeeTable tbody");
+const menuToggle = document.getElementById("menu-toggle");
+const navLinks = document.getElementById("nav-links");
+
+menuToggle.addEventListener("click", () => {
+  navLinks.classList.toggle("show");
+});
 
 function saveEmployees(){
   localStorage.setItem("employees", JSON.stringify(employees));
