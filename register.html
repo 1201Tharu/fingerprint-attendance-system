@@ -5,14 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Register Employees</title>
 <style>
-  /* Base Styles */
-  body { 
-    font-family: Arial, sans-serif; 
-    background: #f4f4f4; 
-    margin:0; 
-    padding:0; 
-  }
-
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
   header { 
     background: #0a3d62; 
     color: #fff; 
@@ -21,43 +14,35 @@
     position: relative;
   }
 
-  /* Hamburger Button */
+  /* --- HAMBURGER ICON --- */
   .menu-toggle {
     display: none;
     position: absolute;
-    top: 25px;
-    right: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: none;
     border: none;
-    font-size: 28px;
+    font-size: 30px;
     color: #fff;
     cursor: pointer;
   }
 
-  /* Navigation */
   nav ul { 
     list-style: none; 
     padding: 0; 
     text-align: center; 
     margin: 10px 0; 
   }
-
   nav ul li { 
     display: inline-block; 
     margin: 0 15px; 
   }
-
   nav ul li a { 
     color: #fff; 
     text-decoration: none; 
     font-weight: bold; 
-    transition: color 0.3s;
   }
-
-  nav ul li a:hover { 
-    color: #ffd32a;
-  }
-
   nav ul li a.active { 
     text-decoration: underline; 
   }
@@ -77,127 +62,48 @@
     gap: 10px; 
     padding: 20px; 
   }
-
   label { font-weight: bold; }
-
-  input, select, button { 
-    padding: 8px; 
-    font-size: 1em; 
-    width: 100%; 
-    box-sizing: border-box; 
-  }
-
-  button { 
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer; 
-  }
-
-  .add-btn { 
-    background-color: #2ecc71; 
-    color: #fff; 
-    grid-column: span 2; 
-  }
+  input, select, button { padding: 8px; font-size: 1em; }
+  button { border: none; border-radius: 4px; cursor: pointer; }
+  .add-btn { background-color: #2ecc71; color: #fff; grid-column: span 2; }
 
   table { 
     width: 100%; 
     border-collapse: collapse; 
     margin-top: 20px; 
   }
+  th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  th { background: #0a3d62; color: #fff; }
+  tr:nth-child(even) { background-color: #f9f9f9; }
 
-  th, td { 
-    border: 1px solid #ccc; 
-    padding: 10px; 
-    text-align: center; 
-  }
+  .edit-btn { background-color: #f39c12; color: #fff; }
+  .delete-btn { background-color: #c0392b; color: #fff; }
 
-  th { 
-    background: #0a3d62; 
-    color: #fff; 
-  }
+  footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
 
-  tr:nth-child(even) { 
-    background-color: #f9f9f9; 
-  }
-
-  .edit-btn { 
-    background-color: #f39c12; 
-    color: #fff; 
-  }
-
-  .delete-btn { 
-    background-color: #c0392b; 
-    color: #fff; 
-  }
-
-  footer { 
-    text-align: center; 
-    padding: 15px; 
-    background: #0a3d62; 
-    color: #fff; 
-    margin-top: 40px; 
-  }
-
-  /* ✅ Responsive Design */
+  /* --- RESPONSIVE STYLES --- */
   @media (max-width: 768px) {
-    .menu-toggle {
-      display: block;
+    form { grid-template-columns: 1fr; }
+    nav ul { 
+      display: none; 
+      flex-direction: column; 
+      background: #0a3d62; 
+      padding: 10px 0; 
     }
-
-    nav ul {
-      display: none;
-      flex-direction: column;
-      background: #0a3d62;
-      position: absolute;
-      top: 70px;
-      right: 0;
-      width: 100%;
-    }
-
-    nav ul.show {
-      display: flex;
-    }
-
-    nav ul li {
-      display: block;
-      margin: 15px 0;
-    }
-
-    form {
-      grid-template-columns: 1fr;
-    }
-
-    .add-btn {
-      grid-column: span 1;
-    }
-
-    table, th, td {
-      font-size: 14px;
-      padding: 6px;
-    }
-
-    table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    header h1 {
-      font-size: 1.3em;
-    }
+    nav ul.active { display: flex; }
+    nav ul li { margin: 10px 0; }
+    .menu-toggle { display: block; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>👨‍💼 Employee Registration</h1>
-  
-  <!-- ☰ Hamburger Button -->
-  <button class="menu-toggle" id="menu-toggle">☰</button>
-
+  <h1>Employee Registration</h1>
+  <!-- ☰ HAMBURGER ICON CENTER -->
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
   <nav>
-    <ul id="nav-links">
+    <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="register.html" class="active">Register</a></li>
       <li><a href="attendance_report.html">Reports</a></li>
@@ -250,20 +156,13 @@
 </main>
 
 <footer>
-  <p>© 2025 Attendance System | Created by Tharushi</p>
+  <p>&copy; 2025 Attendance System | Developed by Tharushi</p>
 </footer>
 
 <script>
 let employees = JSON.parse(localStorage.getItem("employees")) || [];
 const form = document.getElementById("registerForm");
 const tableBody = document.querySelector("#employeeTable tbody");
-
-// ☰ Toggle Menu
-const menuToggle = document.getElementById("menu-toggle");
-const navLinks = document.getElementById("nav-links");
-menuToggle.addEventListener("click", () => {
-  navLinks.classList.toggle("show");
-});
 
 function saveEmployees(){
   localStorage.setItem("employees", JSON.stringify(employees));
@@ -345,6 +244,11 @@ function deleteEmployee(index){
     saveEmployees();
     renderEmployees();
   }
+}
+
+/* --- MOBILE MENU TOGGLE --- */
+function toggleMenu(){
+  document.querySelector("nav ul").classList.toggle("active");
 }
 
 renderEmployees();
