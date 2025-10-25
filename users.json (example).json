@@ -1,0 +1,4 @@
+{
+  "tharushi": { "hash": "$2b$10$...bcrypt-hash...", "name": "Tharushi" },
+  "kumara":   { "hash": "$2b$10$...bcrypt-hash...", "name": "Kumara" }
+}
