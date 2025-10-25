@@ -5,90 +5,178 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Register Employees</title>
 <style>
-  /* ===== Base Styles ===== */
-  body { 
-    font-family: Arial, sans-serif; 
-    background: #f4f4f4; 
-    margin:0; 
-    padding:0; 
-  }
-
-  header { 
-    background: #0a3d62; 
-    color: #fff; 
-    padding: 20px; 
-    text-align: center; 
-    position: relative; 
-  }
-
-  /* ===== Navigation ===== */
-  nav {
-    margin-top: 10px;
-  }
-
-  nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  nav ul li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  nav a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
-
-  nav a:hover {
-    color: #ffd32a;
-  }
-
-  nav a.active {
-    text-decoration: underline;
-  }
-
-  /* ===== Hamburger Menu ===== */
-  .menu-toggle {
-    display: none;
-    position: absolute;
-    top: 25px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: #fff;
-    cursor: pointer;
-  }
-
-  /* ===== Main Content ===== */
-  main { 
-    max-width: 950px; 
-    margin: 30px auto; 
-    padding: 0 20px; 
-    background: #fff; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-    border-radius: 8px; 
-  }
-
-  h2 {
-    text-align: center;
-    color: #0a3d62;
-  }
-
-  form { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 10px; 
-    padding: 20px; 
-  }
-
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
+  header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
+  nav ul { list-style: none; padding: 0; text-align: center; margin: 10px 0; }
+  nav ul li { display: inline-block; margin: 0 15px; }
+  nav ul li a { color: #fff; text-decoration: none; font-weight: bold; }
+  nav ul li a.active { text-decoration: underline; }
+  main { max-width: 950px; margin: 30px auto; padding: 0 20px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
+  form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
   label { font-weight: bold; }
+  input, select, button { padding: 8px; font-size: 1em; }
+  button { border: none; border-radius: 4px; cursor: pointer; }
+  .add-btn { background-color: #2ecc71; color: #fff; grid-column: span 2; }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  th { background: #0a3d62; color: #fff; }
+  tr:nth-child(even) { background-color: #f9f9f9; }
+  .edit-btn { background-color: #f39c12; color: #fff; }
+  .delete-btn { background-color: #c0392b; color: #fff; }
+  footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+</style>
+</head>
+<body>
 
-  input, select, button { 
-    padding: 8px; 
+<header>
+  <h1>Employee Registration</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="register.html" class="active">Register</a></li>
+      <li><a href="attendance_report.html">Reports</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Register New Employee</h2>
+
+  <form id="registerForm">
+    <div>
+      <label>Name:</label>
+      <input type="text" id="name" placeholder="Enter name" required>
+    </div>
+    <div>
+      <label>Employee ID:</label>
+      <input type="text" id="empID"  placeholder="Enter empID" required>
+    </div>
    
+    <div>
+      <label>Department:</label>
+      <input type="text" id="department" placeholder="Enter department" required>
+    </div>
+    <div>
+      <label>Position:</label>
+      <input type="text" id="position" placeholder="Enter position" required>
+    </div>
+     <div>
+      <label>Fingerprint ID:</label>
+      <input type="text" id="fingerprintID" placeholder="Enter fingerprint ID" required>
+    </div>
+    <button type="submit" class="add-btn">Add Employee</button>
+  </form>
+
+  <h2>Registered Employees</h2>
+  <table id="employeeTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Fingerprint ID</th>
+        <th>Department</th>
+        <th>Position</th>
+        <th>Registered Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<footer>
+  <p>&copy; 2025 Attendance System | Developed by Tharushi</p>
+</footer>
+
+<script>
+let employees = JSON.parse(localStorage.getItem("employees")) || [];
+const form = document.getElementById("registerForm");
+const tableBody = document.querySelector("#employeeTable tbody");
+
+function saveEmployees(){
+  localStorage.setItem("employees", JSON.stringify(employees));
+}
+
+function renderEmployees(){
+  if(employees.length===0){
+    tableBody.innerHTML = "<tr><td colspan='7'>No employees registered yet.</td></tr>";
+    return;
+  }
+  tableBody.innerHTML = employees.map((emp, index) => `
+    <tr>
+      <td>${emp.name}</td>
+      <td>${emp.ID}</td>
+      <td>${emp.fingerprintID || '-'}</td>
+      <td>${emp.department}</td>
+      <td>${emp.position}</td>
+      <td>${emp.registeredDate}</td>
+      <td>
+        <button class="edit-btn" onclick="editEmployee(${index})">Edit</button>
+        <button class="delete-btn" onclick="deleteEmployee(${index})">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+form.onsubmit = e => {
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const ID = document.getElementById("empID").value.trim();
+  const fingerprintID = document.getElementById("fingerprintID").value.trim();
+  const department = document.getElementById("department").value.trim();
+  const position = document.getElementById("position").value.trim();
+
+  if(!name || !ID || !fingerprintID || !department || !position){
+    alert("Please fill all fields!");
+    return;
+  }
+
+  if(employees.some(e => e.ID === ID)){
+    alert("Employee ID already exists!");
+    return;
+  }
+
+  const newEmp = {
+    name,
+    ID,
+    fingerprintID,
+    department,
+    position,
+    registeredDate: new Date().toISOString().split('T')[0]
+  };
+
+  employees.push(newEmp);
+  saveEmployees();
+  renderEmployees();
+  form.reset();
+};
+
+function editEmployee(index){
+  const emp = employees[index];
+  const newName = prompt("Edit Name:", emp.name);
+  const newDept = prompt("Edit Department:", emp.department);
+  const newPos = prompt("Edit Position:", emp.position);
+  const newFP = prompt("Edit Fingerprint ID:", emp.fingerprintID);
+  if(newName && newDept && newPos && newFP){
+    employees[index].name = newName;
+    employees[index].department = newDept;
+    employees[index].position = newPos;
+    employees[index].fingerprintID = newFP;
+    saveEmployees();
+    renderEmployees();
+  }
+}
+
+function deleteEmployee(index){
+  if(confirm("Are you sure you want to delete this employee?")){
+    employees.splice(index,1);
+    saveEmployees();
+    renderEmployees();
+  }
+}
+
+renderEmployees();
+</script>
+
+</body>
+</html>
