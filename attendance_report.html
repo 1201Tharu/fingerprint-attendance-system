@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Attendance Reports (Full System)</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
+  header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
+  nav ul { list-style: none; padding: 0; text-align: center; margin: 10px 0; }
+  nav ul li { display: inline-block; margin: 0 15px; }
+  nav ul li a { color: #fff; text-decoration: none; font-weight: bold; }
+  nav ul li a.active { text-decoration: underline; }
+  main { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
+  select, input[type="date"] { padding: 6px 10px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 10px;}
+  th, td { padding: 10px 12px; border: 1px solid #ccc; text-align: center; }
+  th { background-color: #0a3d62; color: #fff; }
+  tr:nth-child(even) { background-color: #f9f9f9; }
+  button { padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; }
+  .present { background-color: #2ecc71; color: #fff; }
+  .absent { background-color: #e74c3c; color: #fff; }
+  input[type="time"] { width: 100px; }
+  footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+  .note { color: #555; font-size: 0.9em; }
+  #summary { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 25px; padding: 15px; border-radius: 8px; overflow-x: auto;}
+  #summary h3 { margin-bottom: 10px; color: #0a3d62; }
+  #summary th, #summary td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  #summary th { background-color: #0a3d62; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Attendance Reports</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="attendance_report.html" class="active">Reports</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Attendance Management (Daily + Summary)</h2>
+
+  <div>
+    <label for="filter">View:</label>
+    <select id="filter">
+      <option value="daily">Daily</option>
+      <option value="weekly">Weekly</option>
+      <option value="monthly">Monthly</option>
+      <option value="yearly">Yearly</option>
+    </select>
+
+    <label for="viewDate">Select date:</label>
+    <input type="date" id="viewDate">
+
+    <label for="employeeFilter">Employee:</label>
+    <select id="employeeFilter">
+      <option value="all">All Employees</option>
+    </select>
+
+    <span class="note">Daily = editable. Others = summary view.</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Department</th>
+        <th>Position</th>
+        <th>Registered Date</th>
+        <th>Status / Days Present</th>
+        <th>Total Hours</th>
+        <th>In Time</th>
+        <th>Out Time</th>
+        <th>Date(s)</th>
+      </tr>
+    </thead>
+    <tbody id="reportBody"></tbody>
+  </table>
+
+  <!-- Bottom summary -->
+  <div id="summary">
+    <h3>Summary: Employee vs Date Working Hours</h3>
+    <div id="summaryTableWrapper"></div>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 Attendance System | Developed by Tharushi</p>
+</footer>
+
+<script>
+const employees = JSON.parse(localStorage.getItem("employees")) || [];
+let attendanceData = JSON.parse(localStorage.getItem("attendance")) || {};
+const body = document.getElementById("reportBody");
+const filter = document.getElementById("filter");
+const viewDateInput = document.getElementById("viewDate");
+const summaryWrapper = document.getElementById("summaryTableWrapper");
+const empFilter = document.getElementById("employeeFilter");
+
+function todayISO(){return new Date().toISOString().split('T')[0];}
+if(!viewDateInput.value) viewDateInput.value = todayISO();
+
+function saveAttendance(){
+  localStorage.setItem("attendance", JSON.stringify(attendanceData));
+}
+
+function stripTime(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+function dateInFilter(attDateStr, filterType, baseDateStr){
+  const att = new Date(attDateStr);
+  const base = new Date(baseDateStr);
+  if(filterType === "daily") return att.toDateString() === base.toDateString();
+  if(filterType === "weekly"){
+    const start = new Date(base); start.setDate(base.getDate() - base.getDay());
+    const end = new Date(start); end.setDate(start.getDate() + 6);
+    return att >= stripTime(start) && att <= stripTime(end);
+  }
+  if(filterType === "monthly") return att.getFullYear()===base.getFullYear() && att.getMonth()===base.getMonth();
+  if(filterType === "yearly") return att.getFullYear()===base.getFullYear();
+  return false;
+}
+
+function calcHours(inTime,outTime){
+  if(!inTime||!outTime)return 0;
+  const [ih,im]=inTime.split(":").map(Number);
+  const [oh,om]=outTime.split(":").map(Number);
+  const diff=(oh*60+om)-(ih*60+im);
+  return diff>0?diff/60:0;
+}
+
+function formatHours(h){
+  const hr=Math.floor(h);
+  const m=Math.round((h-hr)*60);
+  return `${hr}h ${m}m`;
+}
+
+// Populate employee filter dropdown
+function populateEmployeeFilter() {
+  empFilter.innerHTML = '<option value="all">All Employees</option>';
+  employees.forEach(emp => {
+    const opt = document.createElement('option');
+    opt.value = emp.ID;
+    opt.textContent = `${emp.name} (${emp.ID})`;
+    empFilter.appendChild(opt);
+  });
+}
+
+function renderTable(){
+  const f=filter.value;
+  const date=viewDateInput.value||todayISO();
+  if(employees.length===0){body.innerHTML="<tr><td colspan='10'>No employees registered yet.</td></tr>";return;}
+
+  const selectedEmp = empFilter.value;
+  const filteredEmps = selectedEmp === "all" ? employees : employees.filter(e => e.ID === selectedEmp);
+
+  if(f==="daily"){
+    body.innerHTML=filteredEmps.map(emp=>{
+      const rec=(attendanceData[emp.ID]&&attendanceData[emp.ID][date])||{};
+      const st=rec.status||"Absent";
+      const hrs=calcHours(rec.inTime,rec.outTime);
+      return `<tr data-id="${emp.ID}">
+      <td>${emp.name}</td><td>${emp.ID}</td><td>${emp.department}</td><td>${emp.position}</td>
+      <td>${emp.registeredDate||''}</td>
+      <td><button class="${st==='Present'?'present':'absent'} statusBtn">${st}</button></td>
+      <td>${hrs?formatHours(hrs):'-'}</td>
+      <td><input type="time" class="inTime" value="${rec.inTime||''}"></td>
+      <td><input type="time" class="outTime" value="${rec.outTime||''}"></td>
+      <td>${date}</td></tr>`;
+    }).join('');
+    addDailyListeners(date);
+  }else{
+    body.innerHTML=filteredEmps.map(emp=>{
+      const recs=attendanceData[emp.ID]||{};
+      const dates=Object.keys(recs).filter(d=>dateInFilter(d,f,date));
+      let present=0,total=0;
+      dates.forEach(d=>{
+        const r=recs[d];
+        if(r.status==='Present')present++;
+        total+=calcHours(r.inTime,r.outTime);
+      });
+      return `<tr>
+      <td>${emp.name}</td><td>${emp.ID}</td><td>${emp.department}</td><td>${emp.position}</td>
+      <td>${emp.registeredDate||''}</td>
+      <td>${present}</td><td>${total?formatHours(total):'-'}</td><td>-</td><td>-</td>
+      <td>${dates.join(', ')}</td></tr>`;
+    }).join('');
+  }
+  renderSummary(f,date,filteredEmps);
+}
+
+function addDailyListeners(date){
+  body.querySelectorAll("tr").forEach(r=>{
+    const id=r.dataset.id;
+    const btn=r.querySelector(".statusBtn");
+    const inT=r.querySelector(".inTime");
+    const outT=r.querySelector(".outTime");
+    if(!attendanceData[id])attendanceData[id]={};
+
+    btn.onclick=()=>{
+      const cur=attendanceData[id][date]?.status||'Absent';
+      const n=cur==='Present'?'Absent':'Present';
+      attendanceData[id][date]={...(attendanceData[id][date]||{}),status:n,date};
+      saveAttendance();
+      renderTable();
+    };
+
+    inT.onchange=()=>{
+      attendanceData[id][date]={...(attendanceData[id][date]||{}),inTime:inT.value,date};
+      if(inT.value&&!attendanceData[id][date].status)attendanceData[id][date].status='Present';
+      saveAttendance();
+      renderTable();
+    };
+
+    outT.onchange=()=>{
+      attendanceData[id][date]={...(attendanceData[id][date]||{}),outTime:outT.value,date};
+      saveAttendance();
+      renderTable();
+    };
+  });
+}
+
+function renderSummary(filterType,viewDate,filteredEmps){
+  const datesSet=new Set();
+  const matrix={};
+  for(const id in attendanceData){
+    for(const d in attendanceData[id]){
+      if(dateInFilter(d,filterType,viewDate)){
+        datesSet.add(d);
+        const h=calcHours(attendanceData[id][d].inTime,attendanceData[id][d].outTime);
+        if(!matrix[id])matrix[id]={};
+        matrix[id][d]=h;
+      }
+    }
+  }
+  const allDates=Array.from(datesSet).sort();
+  if(allDates.length===0){summaryWrapper.innerHTML="<p>No summary data for this period.</p>";return;}
+
+  let html="<table><thead><tr><th>Employee</th>";
+  allDates.forEach(d=>html+=`<th>${d}</th>`);
+  html+="<th>Total Hours</th></tr></thead><tbody>";
+
+  filteredEmps.forEach(e=>{
+    const id=e.ID;let total=0;
+    html+=`<tr><td>${e.name}</td>`;
+    allDates.forEach(d=>{
+      const h=(matrix[id]&&matrix[id][d])||0;
+      total+=h;
+      html+=`<td>${h?formatHours(h):'-'}</td>`;
+    });
+    html+=`<td>${total?formatHours(total):'-'}</td></tr>`;
+  });
+  html+="</tbody></table>";
+  summaryWrapper.innerHTML=html;
+}
+
+filter.addEventListener('change',renderTable);
+viewDateInput.addEventListener('change',renderTable);
+empFilter.addEventListener('change',renderTable);
+
+populateEmployeeFilter();
+renderTable();
+</script>
+
+</body>
+</html>
