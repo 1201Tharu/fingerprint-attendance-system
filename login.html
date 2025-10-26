@@ -5,16 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Login</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
-main { max-width: 400px; margin: 60px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-h2 { text-align: center; color: #0a3d62; }
-label { display: block; margin: 10px 0 5px; font-weight: bold; }
-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-button { width: 100%; padding: 10px; background: #0a3d62; color: white; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer; }
-button:hover { background: #083350; }
-.message { text-align: center; color: red; margin-top: 10px; }
-footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background: #0a3d62;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+
+  main {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #0a3d62;
+  }
+
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #0a3d62;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background: #083350;
+  }
+
+  .message {
+    text-align: center;
+    color: red;
+    margin-top: 10px;
+    font-size: 0.95em;
+  }
+
+  footer {
+    text-align: center;
+    padding: 15px;
+    background: #0a3d62;
+    color: #fff;
+    margin-top: 40px;
+    font-size: 0.9em;
+  }
+
+  /* ========== Responsive for Mobile ========== */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 20px;
+      padding: 0 10px;
+    }
+
+    main {
+      margin: 40px 15px;
+      padding: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    input, button {
+      font-size: 16px;
+      padding: 14px;
+    }
+
+    button {
+      margin-top: 18px;
+    }
+
+    footer {
+      font-size: 0.85em;
+      padding: 10px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -25,9 +120,11 @@ footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; ma
   <h2>Login</h2>
   <form id="loginForm">
     <label>Username</label>
-    <input type="text" id="username" required>
+    <input type="text" id="username" placeholder="Enter username" required>
+
     <label>Password</label>
-    <input type="password" id="password" required>
+    <input type="password" id="password" placeholder="Enter password" required>
+
     <button type="submit">Login</button>
     <p id="msg" class="message"></p>
   </form>
@@ -51,6 +148,7 @@ form.addEventListener("submit", e => {
     msg.textContent = "Login successful!";
     setTimeout(()=> window.location.href = "index.html", 800);
   } else {
+    msg.style.color = "red";
     msg.textContent = "Invalid username or password!";
   }
 });
