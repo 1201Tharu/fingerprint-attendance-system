@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Manage Users</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
+header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; position: relative; }
+nav ul { list-style: none; padding: 0; text-align: center; margin: 10px 0; }
+nav ul li { display: inline-block; margin: 0 15px; }
+nav ul li a, nav ul li button { color: #fff; background: none; border: none; cursor: pointer; font-weight: bold; text-decoration: none; }
+main { max-width: 950px; margin: 30px auto; padding: 0 20px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; }
+form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
+label { font-weight: bold; }
+input, select, button { padding: 8px; font-size: 1em; width: 100%; box-sizing: border-box; }
+button { border: none; border-radius: 4px; cursor: pointer; }
+.add-btn { background-color: #2ecc71; color: #fff; grid-column: span 2; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+th { background: #0a3d62; color: #fff; }
+.edit-btn { background-color: #f39c12; color: #fff; }
+.delete-btn { background-color: #c0392b; color: #fff; }
+footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Manage Users</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="manage_users.html" class="active">Manage Users</a></li>
+      <li><button onclick="logout()">Logout</button></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <h2>Create New User</h2>
+  <form id="userForm">
+    <div>
+      <label>Username</label>
+      <input type="text" id="username" required>
+    </div>
+    <div>
+      <label>Password</label>
+      <input type="password" id="password" required>
+    </div>
+    <div>
+      <label>Role</label>
+      <select id="role">
+        <option>Admin</option>
+        <option>HR</option>
+        <option>Manager</option>
+        <option selected>Employee</option>
+      </select>
+    </div>
+    <button type="submit" class="add-btn">Add User</button>
+  </form>
+
+  <h2>Existing Users</h2>
+  <table id="userTable">
+    <thead>
+      <tr><th>Username</th><th>Password</th><th>Role</th><th>Actions</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<footer><p>&copy; 2025 Attendance System | Developed by Tharushi</p></footer>
+
+<script src="auth.js"></script>
+<script>
+const user = requireLogin();
+if(user.role !== "Admin"){ alert("Only admin can access this page!"); window.location.href="index.html"; }
+
+let users = loadUsers();
+const tableBody = document.querySelector("#userTable tbody");
+const form = document.getElementById("userForm");
+
+function renderUsers(){
+  tableBody.innerHTML = users.map((u,i)=>`
+  <tr>
+    <td>${u.username}</td>
+    <td>${u.password}</td>
+    <td>${u.role}</td>
+    <td>
+      <button class="edit-btn" onclick="editUser(${i})">Edit</button>
+      ${u.username!=="Admin"? `<button class='delete-btn' onclick='deleteUser(${i})'>Delete</button>` : ""}
+    </td>
+  </tr>`).join('');
+}
+
+form.onsubmit = e=>{
+  e.preventDefault();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
+  if(users.some(u=>u.username===username)) return alert("User already exists!");
+  users.push({username,password,role});
+  saveUsers(users);
+  renderUsers();
+  form.reset();
+};
+
+function editUser(i){
+  const newPass = prompt("New password:", users[i].password);
+  const newRole = prompt("New role:", users[i].role);
+  if(newPass && newRole){
+    users[i].password=newPass;
+    users[i].role=newRole;
+    saveUsers(users);
+    renderUsers();
+  }
+}
+function deleteUser(i){
+  if(confirm("Delete user "+users[i].username+"?")){
+    users.splice(i,1);
+    saveUsers(users);
+    renderUsers();
+  }
+}
+renderUsers();
+</script>
+</body>
+</html>

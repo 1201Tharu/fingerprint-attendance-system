@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Login</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+header { background: #0a3d62; color: #fff; padding: 20px; text-align: center; }
+main { max-width: 400px; margin: 60px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+h2 { text-align: center; color: #0a3d62; }
+label { display: block; margin: 10px 0 5px; font-weight: bold; }
+input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+button { width: 100%; padding: 10px; background: #0a3d62; color: white; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer; }
+button:hover { background: #083350; }
+.message { text-align: center; color: red; margin-top: 10px; }
+footer { text-align: center; padding: 15px; background: #0a3d62; color: #fff; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<header><h1>Attendance System - Login</h1></header>
+
+<main>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label>Username</label>
+    <input type="text" id="username" required>
+    <label>Password</label>
+    <input type="password" id="password" required>
+    <button type="submit">Login</button>
+    <p id="msg" class="message"></p>
+  </form>
+</main>
+
+<footer>
+  <p>&copy; 2025 Attendance System | Developed by Tharushi</p>
+</footer>
+
+<script src="auth.js"></script>
+<script>
+const form = document.getElementById("loginForm");
+const msg = document.getElementById("msg");
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const u = username.value.trim();
+  const p = password.value.trim();
+  if (login(u, p)) {
+    msg.style.color = "green";
+    msg.textContent = "Login successful!";
+    setTimeout(()=> window.location.href = "index.html", 800);
+  } else {
+    msg.textContent = "Invalid username or password!";
+  }
+});
+</script>
+
+</body>
+</html>
