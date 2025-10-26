@@ -17,8 +17,15 @@
     color: #fff;
     padding: 20px;
     text-align: center;
+    position: relative;
   }
 
+  header h1 {
+    margin: 0;
+    font-size: 26px;
+  }
+
+  /* 🔹 NAVIGATION */
   nav ul {
     list-style: none;
     padding: 0;
@@ -46,6 +53,7 @@
     text-decoration: underline;
   }
 
+  /* 🔹 MAIN SECTION */
   main {
     max-width: 800px;
     margin: 30px auto;
@@ -74,48 +82,64 @@
     margin-top: 40px;
   }
 
-  /* ✅ Responsive for Phones & Tablets */
-  @media (max-width: 768px) {
-    header {
-      padding: 15px;
-    }
+  /* 🔹 HAMBURGER BUTTON */
+  .menu-toggle {
+    display: none;
+    position: absolute;
+    top: 22px;
+    right: 25px;
+    background: none;
+    border: 2px solid #fff;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 22px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
 
+  /* 🔹 RESPONSIVE STYLES */
+  @media (max-width: 768px) {
     header h1 {
       font-size: 22px;
     }
 
+    .menu-toggle {
+      display: block;
+    }
+
     nav ul {
-      display: flex;
+      display: none;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      background: #0a3d62;
+      position: absolute;
+      top: 65px;
+      left: 0;
+      width: 100%;
+      padding: 10px 0;
+      margin: 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    nav ul.show {
+      display: flex;
     }
 
     nav ul li {
       display: block;
-      margin: 5px 0;
+      margin: 8px 0;
     }
 
     nav ul li a, nav ul li button {
       font-size: 16px;
-      padding: 6px 10px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 5px;
-      width: 90%;
-      text-align: center;
+      padding: 10px 0;
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
     }
 
     main {
-      margin: 20px 10px;
+      margin: 20px 15px;
       padding: 20px;
-    }
-
-    h2 {
-      font-size: 20px;
-    }
-
-    #welcomeText {
-      font-size: 1em;
     }
 
     footer {
@@ -124,17 +148,14 @@
     }
   }
 
-  /* ✅ Extra small devices */
   @media (max-width: 480px) {
     header h1 {
       font-size: 18px;
     }
-    nav ul li a, nav ul li button {
-      font-size: 15px;
-      width: 100%;
-    }
-    main {
-      padding: 15px;
+
+    .menu-toggle {
+      font-size: 20px;
+      right: 20px;
     }
   }
 </style>
@@ -143,8 +164,10 @@
 
 <header>
   <h1>Attendance System</h1>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
   <nav>
-    <ul>
+    <ul id="navMenu">
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="manage_users.html">Manage Users</a></li>
       <li><a href="register.html">Register Employees</a></li>
@@ -166,7 +189,13 @@
 <script src="auth.js"></script>
 <script>
 const user = requireLogin();
-document.getElementById("welcomeText").textContent = `Logged in as: ${user.username} (${user.role})`;
+document.getElementById("welcomeText").textContent = 
+  `Logged in as: ${user.username} (${user.role})`;
+
+function toggleMenu() {
+  document.getElementById("navMenu").classList.toggle("show");
+}
 </script>
+
 </body>
 </html>
